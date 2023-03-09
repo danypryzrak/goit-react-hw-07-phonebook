@@ -3,11 +3,14 @@ import { useState } from 'react'
 import { Notify } from 'notiflix'
 import PropTypes from 'prop-types';
 import { selectContacts } from 'redux/contacts/contactsSelector';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from '@reduxjs/toolkit';
+import { addContactThunk } from 'redux/contacts/contactsThunk';
 
 
-const Form = ({ handleSubmit }) => {
+const Form = () => {
     
+const dispatch = useDispatch();
 const contacts = useSelector(selectContacts);    
 
 const [name, setName] = useState('')
@@ -30,6 +33,15 @@ function handleChange(event) {
     break
 }
 }
+    
+const handleSubmit = ({ name, phone }) => {
+    const contact = {
+    name,
+    phone,
+    id: nanoid(),
+    };
+    dispatch(addContactThunk(contact));
+};
 
 function onSubmit(ev) {
     ev.preventDefault();
@@ -76,9 +88,5 @@ function onSubmit(ev) {
         )
 
 }
-
-Form.propTypes = {
-handleSubmit: PropTypes.func.isRequired,
-};
 
 export default Form
